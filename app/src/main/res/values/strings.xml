@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Taupe-la !</string>
+    <string name="jouer">Jouer</string>
+    <string name="gameOver">Game Over !</string>
+    <string name="retourAccueil">Retourner à l\'accueil</string>
+    <string name="Meilleur_score">Meilleur score :</string>
+    <string name="choix_difficulte">Choix de la difficulté</string>
+    <string name="btnFacile">Facile</string>
+    <string name="btnNormal">Normal</string>
+    <string name="btnDifficile">Difficile</string>
+    <string name="explciationDifficultes">Le niveau de difficulté influencera la vitesse d\'apparition des taupes et des bombes. Dans tout les cas un seul objectif : taper le maximum de taupe sans toucher aux bombes. Toutes les 10 taupes frappées vous pourrez régénérer l\'intégralité de votre vie. Bonne chance !</string>
+    <string name="a_propos">A propos</string>
+    <string name="text_a_propos">Taupe-la a été créée dans le cadre du cours de Conception/dév d\'application mobile d\'Iza Marfisi par Arthur Chéramy à l\'IUT de Laval (département Informatique).</string>
+    <string name="back"><![CDATA[<]]></string>
+</resources>
