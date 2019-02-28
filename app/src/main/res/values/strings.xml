@@ -3,7 +3,6 @@
     <string name="jouer">Jouer</string>
     <string name="gameOver">Game Over !</string>
     <string name="retourAccueil">Retourner à l\'accueil</string>
-    <string name="Meilleur_score">Meilleur score :</string>
     <string name="choix_difficulte">Choix de la difficulté</string>
     <string name="btnFacile">Facile</string>
     <string name="btnNormal">Normal</string>

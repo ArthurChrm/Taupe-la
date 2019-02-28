@@ -1,5 +1,6 @@
 package iutdelaval.taupe_l;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -25,8 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import iutdelaval.taupe_l.Donnees.AppDatabase;
+import iutdelaval.taupe_l.Donnees.Score;
+
 public class GameActivity extends AppCompatActivity {
 
+    AppDatabase db;
     private List<Trou> listeTrou = new ArrayList<Trou>();
     private CountDownTimer timer;
     private double delais;
@@ -198,24 +203,32 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void gameOver() {
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "score_db").allowMainThreadQueries().build();
         finish();
         SharedPreferences.Editor editor = preferences.edit();
+
         if (preferences.getString("Difficulte", "NORMAL") == "FACILE") {
+            db.scoreDAO().insertAll(new Score("JoueurTest", score, "facile"));
             if (preferences.getInt("ScoreFACILE", 0) < score) {
                 editor.putInt("ScoreFACILE", score);
                 editor.apply();
+                db.scoreDAO().insertAll(new Score("JoueurTest", score, "facile"));
             }
         }
         if (preferences.getString("Difficulte", "NORMAL") == "NORMAL") {
+            db.scoreDAO().insertAll(new Score("JoueurTest", score, "normal"));
             if (preferences.getInt("ScoreNORMAL", 0) < score) {
                 editor.putInt("ScoreNORMAL", score);
                 editor.apply();
+                db.scoreDAO().insertAll(new Score("JoueurTest", score, "normal"));
             }
         }
         if (preferences.getString("Difficulte", "NORMAL") == "DIFFICILE") {
+            db.scoreDAO().insertAll(new Score("JoueurTest", score, "difficile"));
             if (preferences.getInt("ScoreDIFFICILE", 0) < score) {
                 editor.putInt("ScoreDIFFICILE", score);
                 editor.apply();
+                db.scoreDAO().insertAll(new Score("JoueurTest", score, "difficile"));
             }
         }
 
@@ -273,5 +286,12 @@ public class GameActivity extends AppCompatActivity {
             Intent accueil = new Intent(this, MainActivity.class);
             startActivity(accueil);
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (db != null)
+            db.close();
     }
 }
