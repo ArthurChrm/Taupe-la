@@ -3,10 +3,6 @@ package iutdelaval.taupe_l;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.preference.PreferenceManager;
@@ -43,7 +39,7 @@ public class GameOverActivity extends AppCompatActivity implements SoundPool.OnL
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "score_db").allowMainThreadQueries().build();
         Log.i("BDD TEST", db.scoreDAO().getAll().size()+"");
         for(Score current : db.scoreDAO().getAll()){
-            Log.i("BDD TEST", current.nomJoueur+" "+current.score+" "+current.difficulte);
+            Log.i("BDD TEST", current.nomJoueur+" "+current.point +" "+current.difficulte);
         }
         soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 100);
         mapDeSons = new HashMap<String, Integer>(1);
@@ -63,13 +59,13 @@ public class GameOverActivity extends AppCompatActivity implements SoundPool.OnL
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Log.i("Difficulté", preferences.getString("Difficulte", "rien"));
         if (preferences.getString("Difficulte", "").equals("FACILE")) {
-            affichageMeilleurScore.setText("Meilleur score pour la difficulté FACILE : " + preferences.getInt("ScoreFACILE", 0));
+            affichageMeilleurScore.setText("Meilleur point pour la difficulté FACILE : " + preferences.getInt("ScoreFACILE", 0));
         } else if (preferences.getString("Difficulte", "").equals("NORMAL")) {
-            affichageMeilleurScore.setText("Meilleur score pour la difficulté NORMALE : " + preferences.getInt("ScoreNORMAL", 0));
+            affichageMeilleurScore.setText("Meilleur point pour la difficulté NORMALE : " + preferences.getInt("ScoreNORMAL", 0));
         } else if (preferences.getString("Difficulte", "").equals("DIFFICILE")) {
-            affichageMeilleurScore.setText("Meilleur score pour la difficulté DIFFICILE : " + preferences.getInt("ScoreDIFFICILE", 0));
+            affichageMeilleurScore.setText("Meilleur point pour la difficulté DIFFICILE : " + preferences.getInt("ScoreDIFFICILE", 0));
         } else {
-            affichageMeilleurScore.setText("Un problème est survenu pendant le chargement du score.");
+            affichageMeilleurScore.setText("Un problème est survenu pendant le chargement du point.");
         }
 
         // Sert à modifier la couleur de la barre de notifications

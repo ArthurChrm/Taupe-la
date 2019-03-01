@@ -8,18 +8,19 @@ import android.support.annotation.NonNull;
 @Entity
 public class Score {
 
-    @PrimaryKey @NonNull
+    @PrimaryKey
+    @NonNull
     public String nomJoueur;
 
     @ColumnInfo(name = "score")
-    public int score;
+    public int point;
 
     @ColumnInfo(name = "difficulte")
     public String difficulte;
 
-    public Score(String nomJoueur, int score, String difficulte) {
+    public Score(String nomJoueur, int point, String difficulte) {
         this.nomJoueur = nomJoueur;
-        this.score = score;
+        this.point = point;
         this.difficulte = difficulte;
     }
 

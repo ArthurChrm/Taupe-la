@@ -1,6 +1,8 @@
 package iutdelaval.taupe_l;
 
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.migration.Migration;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -35,7 +37,7 @@ public class GameActivity extends AppCompatActivity {
     private List<Trou> listeTrou = new ArrayList<Trou>();
     private CountDownTimer timer;
     private double delais;
-    private boolean startGame; // Va servir à remettre à 0 le score quand une nouvelle partie démarre
+    private boolean startGame; // Va servir à remettre à 0 le point quand une nouvelle partie démarre
     private SharedPreferences preferences;
     private int score;
     private ImageView imageCoeur;
@@ -111,6 +113,7 @@ public class GameActivity extends AppCompatActivity {
                 clicCoeur();
             }
         });
+
         faireApparaitreEntite();
     }
 
@@ -203,16 +206,14 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void gameOver() {
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "score_db").allowMainThreadQueries().build();
         finish();
         SharedPreferences.Editor editor = preferences.edit();
-
+        miseAJourBDD();
         if (preferences.getString("Difficulte", "NORMAL") == "FACILE") {
-            db.scoreDAO().insertAll(new Score("JoueurTest", score, "facile"));
+
             if (preferences.getInt("ScoreFACILE", 0) < score) {
                 editor.putInt("ScoreFACILE", score);
                 editor.apply();
-                db.scoreDAO().insertAll(new Score("JoueurTest", score, "facile"));
             }
         }
         if (preferences.getString("Difficulte", "NORMAL") == "NORMAL") {
@@ -220,7 +221,6 @@ public class GameActivity extends AppCompatActivity {
             if (preferences.getInt("ScoreNORMAL", 0) < score) {
                 editor.putInt("ScoreNORMAL", score);
                 editor.apply();
-                db.scoreDAO().insertAll(new Score("JoueurTest", score, "normal"));
             }
         }
         if (preferences.getString("Difficulte", "NORMAL") == "DIFFICILE") {
@@ -228,7 +228,6 @@ public class GameActivity extends AppCompatActivity {
             if (preferences.getInt("ScoreDIFFICILE", 0) < score) {
                 editor.putInt("ScoreDIFFICILE", score);
                 editor.apply();
-                db.scoreDAO().insertAll(new Score("JoueurTest", score, "difficile"));
             }
         }
 
@@ -294,4 +293,34 @@ public class GameActivity extends AppCompatActivity {
         if (db != null)
             db.close();
     }
+
+    private void miseAJourBDD() {
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "score_db").allowMainThreadQueries().build();
+
+        String difficulte = preferences.getString("Difficulte", "NORMAL");
+        switch (difficulte) {
+            case "FACILE":
+                difficulte = "facile";
+                break;
+            case "NORMAL":
+                difficulte = "normal";
+                break;
+            case "DIFFICILE":
+                difficulte = "difficulte";
+                break;
+        }
+
+        // Si le joueur n'existe pas on va ajouter son score directement
+        if (db.scoreDAO().getScoresByName("JoueurTest", difficulte).isEmpty()) {
+            db.scoreDAO().insertAll(new Score("JoueurTest", score, difficulte));
+            return;
+        }
+
+        //Si le nouveau score du joueur est meilleur que le précédant on le met à jour
+        if (db.scoreDAO().getScoresByName("JoueurTest", difficulte).get(0).point < score)
+            db.scoreDAO().update(new Score("JoueurTest", score, difficulte));
+
+    }
 }
+
+
